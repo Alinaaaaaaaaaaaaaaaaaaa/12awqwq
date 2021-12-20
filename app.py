@@ -215,7 +215,7 @@ class Grafic(tk.Frame):
         self.filter2 = DateEntry(self, date_pattern='dd-mm-YYYY')
 #вывод данных
         self.bitbit1 = tk.Label(self, text="Средняя сумма расходов")
-        self.bitbit2 = tk.Label(self, text=self.date_proverka, font="Calibri 12 bold")
+        self.bitbit2 = tk.Label(self, text="", font="Calibri 12 bold")
         self.botton_chop = ttk.Button(self, text="Фильтровать данные", command=self.date_proverka)
 
         self.label_name.grid(row=0, columnspan=2, sticky="n")
@@ -248,6 +248,9 @@ class Grafic(tk.Frame):
         if d <= a:
             ex.date_proverka(ex.get_timestamp_sting(self.filter1.get()), ex.get_timestamp_sting(self.filter2.get()))
             count = ex.srednii(d, a)
+            self.bitbit2.destroy()
+            self.bitbit2 = tk.Label(self, text=f"{count}", font="Calibri 12 bold")
+            self.bitbit2.grid(row=8, column=1, sticky="e", padx=10, pady=10)
             return count
         else:
             self.show_error()
