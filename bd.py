@@ -11,6 +11,8 @@ def grafic_return():
         querty = """SELECT expense_id, SUM(amount) as amount from payments GROUP BY expense_id"""
         paymetsCursor.execute(querty)
         all_data = paymetsCursor
+        if paymetsCursor.rowcount == 0:
+            return "НЕТ ДАННЫХ"
         amount = {}
         for i in all_data:
             amount[i["expense_id"]] = i["amount"]
