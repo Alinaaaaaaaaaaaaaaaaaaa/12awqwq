@@ -7,40 +7,29 @@ def grafic_return():
     all_data = []
     with sqlite3.connect("database.db") as db:
         db.row_factory = sqlite3.Row
+        paymetsCursor = db.cursor()
+        querty = """SELECT expense_id, SUM(amount) as amount from payments GROUP BY expense_id"""
+        paymetsCursor.execute(querty)
+        all_data = paymetsCursor
+        amount = {}
+        for i in all_data:
+            amount[i["expense_id"]] = i["amount"]
         cursor = db.cursor()
-        querty = """SELECT amount, expense_id from payments ORDER BY expense_id"""
-        cursor.execute(querty)
-        all_data = cursor
-    count = 0
-    amount = []
-    a = []
-    i = 0
-    for payments in all_data:
-        while payments['expense_id'] not in a:
-            a.append(payments['expense_id'])
-        if a == []:
-            return "НЕТ ДАННЫХ"
-        for i in range(len(a)):
-            if i <= len(a) and payments['expense_id'] == a[i]:
-                count += payments['amount']
-                print(count, a[i])
+        querry = """SELECT id, name from expenses"""
+        cursor.execute(querry)
+        result = {}
+        for item in cursor:
+            if item["id"] in amount.keys():
+                result[item["name"]] = amount[item["id"]]
             else:
-                amount.append(count)
-                count = 0
-    print(a, amount)
-    conn = sqlite3.connect("database.db")
-    c = conn.cursor()
-    c.execute("""SELECT id, name from expenses ORDER BY id""")
-    a_new = []
-    data1 = c.fetchall()
-    for row in data1:
-        a_new.append(row[1])
-    print(a_new, amount)
+                result[item["name"]] = 0 
+
     r = random.random()
     g = random.random()
     b = random.random()
     col = (r, g, b)
-    plt.bar(a_new, amount, color=(col))
+
+    plt.bar(result.keys(), result.values(), color=(col))
     plt.xlabel('Cферы')
     plt.ylabel('Расходы')
     plt.show()
